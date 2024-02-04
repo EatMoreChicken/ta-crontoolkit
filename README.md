@@ -33,3 +33,8 @@ This app enhances the Splunk experience by introducing custom commands, dashboar
 - [ ] `crontoolkit_max_allowed_concurrent_searches`: Specifies the maximum number of concurrent searches that should be scheduled at the same time.
 - [ ] `crontoolkit_saved_search_allowlist`: Lists saved searches that are exempt from triggering alerts or being displayed on dashboards.
 - [ ] `crontoolkit_app_allowlist`: Identifies apps that are to be excluded from triggering alerts or appearing on dashboards.
+
+
+## Random To-Dos
+- [ ] The `cronlistruns.py` has a default limit of `43200`, which might be too high.
+- [ ] Update the command limits to use a `limits.conf` if possible.
