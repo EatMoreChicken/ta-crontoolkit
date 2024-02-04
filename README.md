@@ -2,6 +2,9 @@
 
 This app enhances the Splunk experience by introducing custom commands, dashboards, and saved searches, making it simpler for users to manage, analyze, and visualize cron schedules.
 
+## Prerequisites 
+- [ ] Splunk Timeline - Custom Visualization: [https://splunkbase.splunk.com/app/3120](https://splunkbase.splunk.com/app/3120)
+
 ## Usage
 - [ ] Build usage based on the `searchbng.conf`. Maybe automate this?
 
@@ -16,7 +19,7 @@ This app enhances the Splunk experience by introducing custom commands, dashboar
     - [ ] Inputs for toggling enabled searches, setting a cron trigger limit, choosing a relative end date/start date, and a field for entering saved search names with wildcard support.
     - [ ] A timeline panel displaying a visual representation of when the specified saved searches are scheduled to trigger.
     - [ ] Panel will specific times sorted with the highest number of triggers on a timeslot at the top.
-- [ ] **Cron Toolkit - Scheduled Search Analysis - Individual**: A dashboard with panels to pull specific infomration from a saved search to see more details.
+- [ ] **Cron Toolkit - Scheduled Search Analysis - Individual**: A dashboard with panels to pull specific information from a saved search to see more details.
     - [ ] Input to select a saved search and the cron from the saved search (also allows for custom cron schdule input to test).
     - [ ] Timeline with past triggers and the estimated triggers into the future.
     - [ ] KPIs: Expected triggers in the specified times, how many overlaps with other scheduled searches.
@@ -38,3 +41,8 @@ This app enhances the Splunk experience by introducing custom commands, dashboar
 ## Random To-Dos
 - [ ] The `cronlistruns.py` has a default limit of `43200`, which might be too high.
 - [ ] Update the command limits to use a `limits.conf` if possible.
+- [ ] Add support for second repeats?
+- [ ] Add check to see if cron schedule is valid and just return an error for that specific item instead of not running the search at all. Currently the search just errors about and doesn't return any results if a cron schedule is invalid.
+- [ ] Update `cronlistruns` to return `first_trigger_time` and `last_trigger_time`. (Update dashboards to use this instead of `max()` and `min()`)
+- [ ] Base searches for dashboard.
+- [ ] Make a macro for the dashboard's time evals.

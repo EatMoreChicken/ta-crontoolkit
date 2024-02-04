@@ -49,7 +49,10 @@ class CronListRuns(StreamingCommand):
             schedule = str(record[self.schedule])
             if self.start in record:
                 start = str(record[self.start])
-                if re.match("^\d{10}", start):
+                if start == "":
+                    start = datetime.datetime.now()
+                    start = start.strftime(date_format)
+                elif re.match("^\d{10}", start):
                     start = re.match("^\d{10}", start).group()
                 if not isinstance(start, datetime.datetime):
                     try:
@@ -65,7 +68,10 @@ class CronListRuns(StreamingCommand):
                 start = datetime.datetime.now()
             if self.end in record:
                 end = str(record[self.end])
-                if re.match("^\d{10}", end):
+                if end == "":
+                    end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
+                    end = end.strftime(date_format)
+                elif re.match("^\d{10}", end):
                     end = re.match("^\d{10}", end).group()
                 if not isinstance(end, datetime.datetime):
                     try:
@@ -74,9 +80,9 @@ class CronListRuns(StreamingCommand):
                         try:
                                 end = datetime.datetime.fromtimestamp(int(end))
                         except ValueError:
-                            raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: {end}")
+                            raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: '{end}'")
                 else:
-                    raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: {end}")
+                    raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: '{end}'")
             else:
                 end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
 

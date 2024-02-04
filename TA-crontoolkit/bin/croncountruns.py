@@ -48,6 +48,9 @@ class CronCountRuns(StreamingCommand):
             schedule = str(record[self.schedule])
             if self.start in record:
                 start = str(record[self.start])
+                if start == "":
+                    start = datetime.datetime.now()
+                    start = start.strftime(date_format)
                 if re.match("^\d{10}", start):
                     start = re.match("^\d{10}", start).group()
                 if not isinstance(start, datetime.datetime):
@@ -64,7 +67,10 @@ class CronCountRuns(StreamingCommand):
                 start = datetime.datetime.now()
             if self.end in record:
                 end = str(record[self.end])
-                if re.match("^\d{10}", end):
+                if end == "":
+                    end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
+                    end = end.strftime(date_format)
+                elif re.match("^\d{10}", end):
                     end = re.match("^\d{10}", end).group()
                 if not isinstance(end, datetime.datetime):
                     try:
@@ -100,9 +106,9 @@ class CronCountRuns(StreamingCommand):
 
             record["trigger_count"] = trigger_count
             if first_trigger_time is not None:
-                record["first_trigger_time"] = first_trigger_time.strftime(date_format)
+                record["first_trigger_time"] = int(first_trigger_time.timestamp())
             if last_trigger_time is not None:
-                record["last_trigger_time"] = last_trigger_time.strftime(date_format)
+                record["last_trigger_time"] = int(last_trigger_time.timestamp())
             yield record
 
 dispatch(CronCountRuns, sys.argv, sys.stdin, sys.stdout, __name__)
