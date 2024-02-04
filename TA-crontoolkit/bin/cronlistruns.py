@@ -3,6 +3,7 @@ import sys
 import datetime
 import json
 from croniter import croniter
+import re
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib.searchcommands import dispatch, StreamingCommand, Configuration, Option, validators
@@ -26,27 +27,58 @@ class CronListRuns(StreamingCommand):
     )
     start = Option(
         doc="The start time",
-        require=True,
+        require=False,
         validate=validators.Fieldname(),
     )
     end = Option(
         doc="The end time",
-        require=True,
+        require=False,
         validate=validators.Fieldname(),
     )
     limit = Option(
         doc="The limit of trigger counts",
         require=False,
         validate=validators.Integer(),
-        default=20
+        default=43200
     )
 
     def stream(self, records):
+        date_format = "%Y-%m-%d %H:%M:%S"
         self.logger.debug('CronListRuns: %s', self)
         for record in records:
-            schedule = record["schedule"]
-            start = datetime.datetime.strptime(record["start"], "%Y-%m-%d %H:%M:%S")
-            end = datetime.datetime.strptime(record["end"], "%Y-%m-%d %H:%M:%S")
+            schedule = str(record[self.schedule])
+            if self.start in record:
+                start = str(record[self.start])
+                if re.match("^\d{10}", start):
+                    start = re.match("^\d{10}", start).group()
+                if not isinstance(start, datetime.datetime):
+                    try:
+                        start = datetime.datetime.strptime(start, date_format)
+                    except ValueError:
+                        try:
+                            start = datetime.datetime.fromtimestamp(int(start))
+                        except ValueError:
+                            raise ValueError(f"Invalid start time format. Expected format: {date_format} or epoch timestamp: {start}")
+                else:
+                    raise ValueError(f"Invalid start time format. Expected format: {date_format} or epoch timestamp: {start}")
+            else:
+                start = datetime.datetime.now()
+            if self.end in record:
+                end = str(record[self.end])
+                if re.match("^\d{10}", end):
+                    end = re.match("^\d{10}", end).group()
+                if not isinstance(end, datetime.datetime):
+                    try:
+                        end = datetime.datetime.strptime(end, date_format)
+                    except ValueError:
+                        try:
+                                end = datetime.datetime.fromtimestamp(int(end))
+                        except ValueError:
+                            raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: {end}")
+                else:
+                    raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: {end}")
+            else:
+                end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
 
             iter = croniter(schedule, start)
             triggers = []
