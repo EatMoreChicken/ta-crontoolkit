@@ -29,10 +29,10 @@ This app enhances the Splunk experience by introducing custom commands, dashboar
 - [ ] **Cron Toolkit - Search Schedule Frequency Exceeded Threshold**: Triggers when any of the scheduled searches operate on a cron schedule that surpasses a predetermined frequency limit. This feature is beneficial for identifying instances where users may have set up overly frequent searches or to pinpoint potential misconfigurations in the scheduling process.
 
 ## Macros
-- [ ] `crontoolkit_max_allowed_frequency`: Defines the maximum allowed frequency for schedules. Any schedule exceeding this frequency would trigger associated alerts or show on related dashboards.
-- [ ] `crontoolkit_max_allowed_concurrent_searches`: Specifies the maximum number of concurrent searches that should be scheduled at the same time.
-- [ ] `crontoolkit_saved_search_allowlist`: Lists saved searches that are exempt from triggering alerts or being displayed on dashboards.
-- [ ] `crontoolkit_app_allowlist`: Identifies apps that are to be excluded from triggering alerts or appearing on dashboards.
+- [x] `crontoolkit_max_allowed_frequency`: Defines the maximum allowed frequency for schedules within a 1-hour period of time. Any schedule exceeding this frequency would trigger associated alerts or show on related dashboards.
+- [x] `crontoolkit_max_allowed_concurrent_searches`: Specifies the maximum number of concurrent searches that should be scheduled at the same time.
+- [x] `crontoolkit_saved_search_allowlist`: Lists saved searches that are exempt from triggering alerts or being displayed on dashboards.
+- [x] `crontoolkit_app_allowlist`: Identifies apps that are to be excluded from triggering alerts or appearing on dashboards.
 
 
 ## Random To-Dos
