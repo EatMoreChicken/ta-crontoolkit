@@ -3,4 +3,5 @@
     <view name="cron_toolkit__scheduled_search_analysis"/>
     <view name="cron_toolkit__scheduled_search_analysis__individual"/>
     <view name="cron_toolkit__schedule_builder"/>
+    <view name="cron_toolkit__schedule_builder__compare"/>
 </nav>
