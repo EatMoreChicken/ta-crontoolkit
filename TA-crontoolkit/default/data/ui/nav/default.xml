@@ -1,15 +1,4 @@
 <nav>
-    <view name="flashtimeline" default='true' />
-    <collection label="Dashboards">
-        <view source="unclassified" match="Cron Toolkit"/>
-        <divider />
-        <view source="unclassified" match="cron_toolkit"/>
-    </collection>
-    <collection label="Searches &amp; Reports">
-        <collection label="Reports">
-            <saved source="unclassified" match="Cron Toolkit" />
-        </collection>
-        <divider />
-        <saved source="unclassified" match="Cron Toolkit" />
-    </collection>
+    <view name="search" default="true" />
+    <view name="cron_toolkit__scheduled_search_analysis"/>
 </nav>
