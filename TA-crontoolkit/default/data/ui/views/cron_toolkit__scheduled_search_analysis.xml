@@ -1,0 +1,30 @@
+<dashboard version="1.1">
+  <label>Cron Toolkit - Scheduled Search Analysis</label>
+  <description>Analyze cron schedules on saved searches.</description>
+  <row>
+    <panel>
+      <title>Scheduled Searches with Trigger Count</title>
+      <table>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| fields title eai:acl.app cron_schedule
+| rename eai:acl.app as app, title as search_name, cron_schedule as schedule
+| eval end=relative_time(now(), "+7d@d"), start=relative_time(now(), "-7d@d")
+| croncountruns schedule=schedule end=end start=start
+| fields search_name app schedule trigger_count
+| sort - trigger_count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
