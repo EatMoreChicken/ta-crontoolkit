@@ -1,6 +1,9 @@
 # Splunk local
 local/
 
+# Splunk local meta
+metadata/local.meta
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
