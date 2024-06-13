@@ -1,0 +1,141 @@
+<form version="1.1">
+  <label>Cron Toolkit - Schedule Builder - Compare</label>
+  <description>Compare cron schedules of different scheduled searches.</description>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="dropdown" token="app_name" searchWhenChanged="false">
+      <label>App</label>
+      <choice value="*">All</choice>
+      <fieldForLabel>eai:acl.app</fieldForLabel>
+      <fieldForValue>eai:acl.app</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| dedup eai:acl.app
+| fields eai:acl.app</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="owner">
+      <label>Owner</label>
+      <fieldForLabel>eai:acl.owner</fieldForLabel>
+      <fieldForValue>eai:acl.owner</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1" search="eai:acl.app=\"$app_name$\""
+| dedup eai:acl.owner
+| fields eai:acl.owner</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+    </input>
+    <input type="multiselect" token="search_name" searchWhenChanged="true">
+      <label>Search Name</label>
+      <fieldForLabel>title_cron</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1" search="eai:acl.owner=\"$owner$\""  search="eai:acl.app=\"$app_name$\""
+| dedup title
+| fields title cron_schedule
+| eval title_cron=title." (".cron_schedule.")"</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <valuePrefix>"</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> ,</delimiter>
+      <choice value="*">All (Be Careful!)</choice>
+    </input>
+    <input type="text" token="start_time">
+      <label>Start Time</label>
+      <default>now</default>
+    </input>
+    <input type="text" token="end_time">
+      <label>End Time</label>
+      <default>+1d</default>
+      <initialValue>+1d</initialValue>
+    </input>
+    <input type="text" token="trigger_count_limit">
+      <label>Trigger Count Limit</label>
+      <default>20000</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <viz type="timeline_app.timeline">
+        <title>Expected Run Times</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| search title IN ($search_name$) eai:acl.app="$app_name$" eai:acl.owner="$owner$"
+| eval start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=cron_schedule end=end_time start=start_time limit=$trigger_count_limit$
+| mvexpand triggers
+| rename triggers as _time
+| table _time title</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Concurrent Searches</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| search title IN ($search_name$) eai:acl.app="$app_name$" eai:acl.owner="$owner$"
+| eval start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=cron_schedule end=end_time start=start_time limit=$trigger_count_limit$
+| mvexpand triggers
+| rename triggers as _time
+| stats count as "Concurrent Searches" by _time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+</form>

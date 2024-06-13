@@ -1,0 +1,225 @@
+<form version="1.1">
+  <label>Cron Toolkit - Scheduled Search Analysis - Individual</label>
+  <description>Analyze cron schedules for specific saved searches.</description>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="app_name" searchWhenChanged="true">
+      <label>App</label>
+      <choice value="*">All</choice>
+      <fieldForLabel>eai:acl.app</fieldForLabel>
+      <fieldForValue>eai:acl.app</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| dedup eai:acl.app
+| fields eai:acl.app</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="owner">
+      <label>Owner</label>
+      <fieldForLabel>eai:acl.owner</fieldForLabel>
+      <fieldForValue>eai:acl.owner</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1" search="eai:acl.app=\"$app_name$\""
+| dedup eai:acl.owner
+| fields eai:acl.owner</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="search_name" searchWhenChanged="true">
+      <label>Search</label>
+      <fieldForLabel>title_cron</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1" search="eai:acl.owner=\"$owner$\""  search="eai:acl.app=\"$app_name$\""
+| dedup title
+| fields title cron_schedule
+| eval title_cron=title." (".cron_schedule.")"</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="global_time" searchWhenChanged="true">
+      <label>Historical Search Time Picker</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="text" token="end_time">
+      <label>Cron End Time</label>
+      <default>+1d</default>
+      <initialValue>+1d</initialValue>
+    </input>
+    <input type="text" token="limit">
+      <label>Cron Trigger Count Limit</label>
+      <default>20000</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <single>
+        <title>Search Name</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| table search_name</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Cron Schedule</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| table schedule</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Historical Run Count</title>
+        <search>
+          <query>| search index=_internal savedsearch_name="$search_name$" sourcetype=scheduler
+| fields savedsearch_name scheduled_time dispatch_time run_time
+| stats c</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Expended Run Count</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| eval end_time="$end_time$"
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=schedule end=end_time limit=$limit$
+| eval type="Scheduled"
+| mvexpand triggers
+| stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Total Run Count</title>
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| eval end_time="$end_time$"
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=schedule end=end_time limit=$limit$
+| eval type="Scheduled"
+| mvexpand triggers
+| rename triggers as _time
+| table _time type
+| append
+    [ | search index=_internal savedsearch_name="$search_name$" sourcetype=scheduler
+| fields savedsearch_name scheduled_time dispatch_time run_time
+| eval type="Historic", run_time=run_time*1000
+| table _time type run_time]
+| table _time type run_time
+| stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Avg. Historical Run Time</title>
+        <search>
+          <query>index=_internal savedsearch_name="$search_name$" sourcetype=scheduler
+| fields savedsearch_name scheduled_time dispatch_time run_time
+| stats avg(run_time) as avg_run_time sum(run_time) as total_run_time by savedsearch_name
+| eval avg_run_time=round(avg_run_time), total_run_time=round(total_run_time)
+| fieldformat avg_run_time=avg_run_time." Seconds"
+| fieldformat total_run_time=total_run_time." Seconds"
+| fields avg_run_time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Total Historical Run Time</title>
+        <search>
+          <query>index=_internal savedsearch_name="$search_name$" sourcetype=scheduler
+| fields savedsearch_name scheduled_time dispatch_time run_time
+| stats avg(run_time) as avg_run_time sum(run_time) as total_run_time by savedsearch_name
+| eval avg_run_time=round(avg_run_time), total_run_time=round(total_run_time)
+| fieldformat avg_run_time=avg_run_time." Seconds"
+| fieldformat total_run_time=total_run_time." Seconds"
+| fields total_run_time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <viz type="timeline_app.timeline">
+        <search>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| eval end_time="$end_time$"
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=schedule end=end_time limit=$limit$
+| eval type="Scheduled"
+| mvexpand triggers
+| rename triggers as _time
+| table _time type
+| append
+    [ | search index=_internal savedsearch_name="$search_name$" sourcetype=scheduler
+| fields savedsearch_name scheduled_time dispatch_time run_time
+| eval type="Historic", run_time=run_time*1000
+| table _time type run_time]
+| table _time type run_time</query>
+          <earliest>$global_time.earliest$</earliest>
+          <latest>$global_time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+    </panel>
+  </row>
+</form>

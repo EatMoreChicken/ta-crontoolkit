@@ -1,18 +1,53 @@
-<dashboard version="1.1">
+<form version="1.1">
   <label>Cron Toolkit - Scheduled Search Analysis</label>
   <description>Analyze cron schedules on saved searches.</description>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="text" token="search_name">
+      <label>Search Name</label>
+      <default>*</default>
+    </input>
+    <input type="text" token="app_name">
+      <label>App</label>
+      <default>*</default>
+    </input>
+    <input type="text" token="owner">
+      <label>Owner</label>
+      <default>*</default>
+    </input>
+    <input type="text" token="result_limit">
+      <label>Number of Results</label>
+      <default>100</default>
+    </input>
+    <input type="text" token="start_time">
+      <label>Start Time</label>
+      <default>now</default>
+    </input>
+    <input type="text" token="end_time">
+      <label>End Time</label>
+      <default>+1d</default>
+      <initialValue>+1d</initialValue>
+    </input>
+    <input type="text" token="trigger_count_limit">
+      <label>Trigger Count Limit</label>
+      <default>20000</default>
+    </input>
+  </fieldset>
   <row>
     <panel>
       <title>Scheduled Searches with Trigger Count</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1"
-| fields title eai:acl.app cron_schedule
-| rename eai:acl.app as app, title as search_name, cron_schedule as schedule
-| eval end=relative_time(now(), "+7d@d"), start=relative_time(now(), "-7d@d")
-| croncountruns schedule=schedule end=end start=start
-| fields search_name app schedule trigger_count
-| sort - trigger_count</query>
+          <query>| rest /servicesNS/-/-/saved/searches splunk_server=local search="disabled=0" search="is_scheduled=1" search="eai:acl.owner=\"$owner$\""  search="eai:acl.app=\"$app_name$\""
+| search title="$search_name$"
+| fields title eai:acl.app eai:acl.owner cron_schedule
+| rename eai:acl.app as app, eai:acl.owner as owner, title as search_name, cron_schedule as schedule
+| eval start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| croncountruns schedule=schedule end=end_time start=start_time limit=$trigger_count_limit$
+| fields search_name app owner schedule trigger_count
+| sort - trigger_count
+| head $result_limit$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -21,10 +56,11 @@
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
         <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
       </table>
     </panel>
   </row>
-</dashboard>
+</form>

@@ -1,0 +1,105 @@
+<form version="1.1">
+  <label>Cron Toolkit - Schedule Builder</label>
+  <description>Build and visualize new cron schedules.</description>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="text" token="schedule" searchWhenChanged="false">
+      <label>Cron Schedule</label>
+      <default>2,51 * * * *</default>
+    </input>
+    <input type="text" token="start_time">
+      <label>Start Time</label>
+      <default>now</default>
+    </input>
+    <input type="text" token="end_time">
+      <label>End Time</label>
+      <default>+1d@d</default>
+      <initialValue>+1d@d</initialValue>
+    </input>
+    <input type="text" token="limit">
+      <label>Trigger Count Limit</label>
+      <default>20000</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <single>
+        <title>Schedule</title>
+        <search>
+          <query>| makeresults
+| eval schedule="$schedule$"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Expected # of Triggers</title>
+        <search>
+          <query>| makeresults 
+| eval schedule="$schedule$", start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| croncountruns schedule=schedule start=start_time end=end_time limit=$limit$
+| fields trigger_count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| makeresults 
+| eval schedule="$schedule$", start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| croncountruns schedule=schedule start=start_time end=end_time limit=$limit$
+| eval current_time=strftime(_time, "%c")
+| eval first_trigger_time=strftime(first_trigger_time, "%c")
+| eval last_trigger_time=strftime(last_trigger_time, "%c")
+| table current_time first_trigger_time last_trigger_time
+| rename current_time as "Current Time", first_trigger_time as "First Trigger Time", last_trigger_time as "Last Trigger Time"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <viz type="timeline_app.timeline">
+        <title>Trigger Time Visualization</title>
+        <search>
+          <query>| makeresults 
+| eval schedule="$schedule$", start_time="$start_time$", end_time="$end_time$"
+| eval start_time=case(start_time == "now", now(), isnull(start_time) OR start_time == "", null(), true(), relative_time(now(), start_time))
+| eval end_time=case(end_time == "now", now(), isnull(end_time) OR end_time == "", null(), true(), relative_time(now(), end_time))
+| cronlistruns schedule=schedule start=start_time end=end_time limit=$limit$
+| mvexpand triggers
+| rename triggers as _time
+| table _time schedule</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+    </panel>
+  </row>
+</form>
