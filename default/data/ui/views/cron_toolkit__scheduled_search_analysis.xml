@@ -1,7 +1,7 @@
 <form version="1.1">
   <label>Cron Toolkit - Scheduled Search Analysis</label>
   <description>Analyze cron schedules on saved searches.</description>
-  <fieldset submitButton="true" autoRun="true">
+  <fieldset submitButton="true" autoRun="false">
     <input type="text" token="search_name">
       <label>Search Name</label>
       <default>*</default>
