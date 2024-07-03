@@ -1,0 +1,7 @@
+<form version="1.1">
+  <label>Welcome</label>
+  <description>Visualize and compare cron schedules of different scheduled searches.</description>
+  <row>
+    <html><p><strong>Your bold text here.</strong> Your normal text here.</p></html>
+  </row>
+</form>
