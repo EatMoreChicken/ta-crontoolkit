@@ -1,130 +1,172 @@
 <form version="1.1">
   <label>Welcome</label>
   <row>
+    <panel>
+      <html>
+        <h1 id="ta-crontoolkit">Cron Toolkit</h1>
+        <p>Welcome to the Cron Toolkit app.</p>
+        <p>The purpose of this app to provide a toolkit for visualizing and analyzing cron schedules
+          within Splunk. The app introduces custom commands and easy to use dashboards to make
+          working
+          with cron schedules easier.</p>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h2 id="pre-requisites" style="font-weight: bold;">Pre-requisites</h2>
+        <p>
+          <strong>Splunk Timeline - Custom Visualization</strong>
+        </p>
+        <p>This app requires the Splunk Timeline - Custom Visualization app to be installed. You can
+          download it from <a href="https://splunkbase.splunk.com/app/3120/">Splunkbase</a>.</p>
+        <p>
+          <strong>Splunk Capability</strong>
+        </p>
+        <p>Additionally, if you plan to use the dashboards, your account&#39;s role will need to
+          have the necessary capabilities to use the <code>rest</code> command. This isn&#39;t a
+          dealbreaker, but it will limit the functionality of the built-in dashboards.</p>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <h2 id="installation" style="font-weight: bold;">Installation</h2>
+        <ol>
+          <li>Download the app from the latest GitHub release.</li>
+          <li>Install the app on your Splunk instance.</li>
+          <li>Restart Splunk.</li>
+        </ol>
+      </html>
+    </panel>
+  </row>
+  <row>
     <html>
-      <h1 id="ta-crontoolkit">Cron Toolkit</h1>
-      <p>Welcome to the Cron Toolkit app.</p>
-      <p>The purpose of this app to provide a toolkit for visualizing and analyzing cron schedules
-        within Splunk. The app introduces custom commands and easy to use dashboards to make working
-        with cron schedules easier.</p>
-      <h2 id="pre-requisites">Pre-requisites</h2>
-      <p>
-        <strong>Splunk Timeline - Custom Visualization</strong>
-      </p>
-      <p>This app requires the Splunk Timeline - Custom Visualization app to be installed. You can
-        download it from <a href="https://splunkbase.splunk.com/app/3120/">Splunkbase</a>.</p>
-      <p>
-        <strong>Splunk Capability</strong>
-      </p>
-      <p>Additionally, if you plan to use the dashboards, your account&#39;s role will need to have
-        the necessary capabilities to use the <code>rest</code> command. This isn&#39;t a
-        dealbreaker, but it will limit the functionality of the built-in dashboards.</p>
-      <h2 id="installation">Installation</h2>
-      <ol>
-        <li>Download the app from the latest GitHub release.</li>
-        <li>Install the app on your Splunk instance.</li>
-        <li>Restart Splunk.</li>
-      </ol>
-      <h2 id="setup">Setup</h2>
+      <h2 id="setup" style="font-weight: bold;">Setup</h2>
       <p>Currently, the only setup is to configure the app&#39;s macros. These macros are used by
         the app&#39;s dashboards. Defaults are provided, but you can modify them to suit your needs.</p>
-      <p><strong>crontoolkit_app_allowlist</strong> (Not implemented yet)</p>
-      <p>Default: <code>()</code></p>
-      <p>Define a list of apps that are allowed to trigger alerts or appear on dashboards. If you
-        leave this blank, all apps will be included.</p>
-      <p><strong>crontoolkit_max_allowed_concurrent_searches</strong> (Not implemented yet)</p>
-      <p>Default: <code>16</code></p>
-      <p>Define the maximum number of concurrent searches that should be scheduled at the same time.</p>
-      <p><strong>crontoolkit_max_allowed_frequency</strong> (Not implemented yet)</p>
-      <p>Default: <code>60</code></p>
-      <p>Define the maximum allowed frequency for schedules within a 1-hour period of time. Any
-        schedule exceeding this frequency would trigger associated alerts or show on related
-        dashboards.</p>
-      <p><strong>crontoolkit_saved_search_allowlist</strong> (Not implemented yet)</p>
-      <p>Default: <code>()</code></p>
-      <p>Define a list of saved searches that are allowed to trigger alerts or appear on dashboards.
-        If you leave this blank, all saved searches will be included.</p>
-      <h2 id="usage">Usage</h2>
-      <h3 id="custom-commands">Custom Commands</h3>
-      <h4 id="-croncountruns-">
-        <code>croncountruns</code>
-      </h4>
-      <p>This command calculates the number of times a cron job is set to trigger within a specified
-        timeframe.</p>
-      <p><strong>Syntax</strong>:</p>
-      <pre><code class="lang-spl">croncountruns schedule=&lt;<span class="hljs-keyword">string</span>&gt; [start=&lt;<span class="hljs-keyword">string</span>&gt;] [<span class="hljs-built_in">end</span>=&lt;<span class="hljs-keyword">string</span>&gt;] [limit=&lt;<span class="hljs-keyword">int</span>&gt;]
+    </html>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <p><strong>crontoolkit_app_allowlist</strong> (Not implemented yet)</p>
+        <p>Default: <code>()</code></p>
+        <p>Define a list of apps that are allowed to trigger alerts or appear on dashboards. If you
+          leave this blank, all apps will be included.</p>
+        <p><strong>crontoolkit_max_allowed_concurrent_searches</strong> (Not implemented yet)</p>
+        <p>Default: <code>16</code></p>
+        <p>Define the maximum number of concurrent searches that should be scheduled at the same
+          time.</p>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <p><strong>crontoolkit_max_allowed_frequency</strong> (Not implemented yet)</p>
+        <p>Default: <code>60</code></p>
+        <p>Define the maximum allowed frequency for schedules within a 1-hour period of time. Any
+          schedule exceeding this frequency would trigger associated alerts or show on related
+          dashboards.</p>
+        <p><strong>crontoolkit_saved_search_allowlist</strong> (Not implemented yet)</p>
+        <p>Default: <code>()</code></p>
+        <p>Define a list of saved searches that are allowed to trigger alerts or appear on
+          dashboards.
+          If you leave this blank, all saved searches will be included.</p>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <html>
+      <h2 id="custom-commands" style="font-weight: bold;">Custom Commands</h2>
+    </html>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h3 id="-croncountruns-">
+          <code>croncountruns</code>
+        </h3>
+        <p>This command calculates the number of times a cron job is set to trigger within a
+          specified
+          timeframe.</p>
+        <p><strong>Syntax</strong>:</p>
+        <pre><code class="lang-spl">croncountruns schedule=&lt;<span class="hljs-keyword">string</span>&gt; [start=&lt;<span class="hljs-keyword">string</span>&gt;] [<span class="hljs-built_in">end</span>=&lt;<span class="hljs-keyword">string</span>&gt;] [limit=&lt;<span class="hljs-keyword">int</span>&gt;]
 </code></pre>
-      <p><strong>Things to note</strong>:</p>
-      <ul>
-        <li>If you do not specify a <code>start</code>, the command will default to the current
-          time.</li>
-        <li>If you do not specify an <code>end</code>, the command will default to 10 years from the
-          current time.</li>
-        <li>The <code>limit</code> parameter is used to limit the number of cron triggers to
-          calculate. The default is 43200.</li>
-      </ul>
-      <p><strong>Examples</strong>:</p>
-      <p>In this example, we will create a sample cron schedule:</p>
-      <pre><code class="lang-spl">| <span class="hljs-type">makeresults</span> count=<span class="hljs-number">1</span> 
+        <p><strong>Things to note</strong>:</p>
+        <ul>
+          <li>If you do not specify a <code>start</code>, the command will default to the current
+            time.</li>
+          <li>If you do not specify an <code>end</code>, the command will default to 10 years from
+            the current time.</li>
+          <li>The <code>limit</code> parameter is used to limit the number of cron triggers to
+            calculate. The default is 43200.</li>
+        </ul>
+        <p><strong>Examples</strong>:</p>
+        <p>In this example, we will create a sample cron schedule:</p>
+        <pre><code class="lang-spl">| <span class="hljs-type">makeresults</span> count=<span class="hljs-number">1</span> 
 | <span class="hljs-type">eval</span> schedule = <span class="hljs-string">"*/5 * * * *"</span> 
 | <span class="hljs-type">eval</span> start = <span class="hljs-string">"2022-01-01 00:00:00"</span> 
 | <span class="hljs-type">eval</span> <span class="hljs-keyword">end</span> = <span class="hljs-string">"2022-01-02 00:00:00"</span> 
 | <span class="hljs-type">croncountruns</span> schedule=schedule <span class="hljs-keyword">end</span>=<span class="hljs-keyword">end</span> start=start
 | <span class="hljs-type">convert</span> ctime(first_trigger_time) ctime(last_trigger_time)
 </code></pre>
-      <p>This will return the following table:</p>
-      <table>
-        <thead>
-          <tr>
-            <th>_time</th>
-            <th>schedule</th>
-            <th>start</th>
-            <th>end</th>
-            <th>trigger_count</th>
-            <th>first_trigger_time</th>
-            <th>last_trigger_time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2024-07-03 18:56:28</td>
-            <td><em>/5 </em> <em> </em> *</td>
-            <td>2022-01-01 00:00:00</td>
-            <td>2022-01-02 00:00:00</td>
-            <td>288</td>
-            <td>01/01/2022 00:05:00</td>
-            <td>01/02/2022 00:00:00</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>Here is a real-world example that pulls the cron schedule from saved searches. This example
-        will return the number of times the saved search is set to trigger in the next 10 years
-        (default) from the current time. <code>43200</code> is </p>
-      <pre><code class="lang-spl"><span class="hljs-string">| rest /servicesNS/-/-/saved/searches splunk_server=local search="</span>disabled=<span class="hljs-number">0</span><span class="hljs-string">" search="</span>is_scheduled=<span class="hljs-number">1</span><span class="hljs-string">" count=10</span>
+        <p>This will return the following table:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>_time</th>
+              <th>schedule</th>
+              <th>start</th>
+              <th>end</th>
+              <th>trigger_count</th>
+              <th>first_trigger_time</th>
+              <th>last_trigger_time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2024-07-03 18:56:28</td>
+              <td><em>/5 </em> <em> </em> *</td>
+              <td>2022-01-01 00:00:00</td>
+              <td>2022-01-02 00:00:00</td>
+              <td>288</td>
+              <td>01/01/2022 00:05:00</td>
+              <td>01/02/2022 00:00:00</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Here is a real-world example that pulls the cron schedule from saved searches. This
+          example will return the number of times the saved search is set to trigger in the next 10
+          years (default) from the current time. <code>43200</code> is </p>
+        <pre><code class="lang-spl"><span class="hljs-string">| rest /servicesNS/-/-/saved/searches splunk_server=local search="</span>disabled=<span class="hljs-number">0</span><span class="hljs-string">" search="</span>is_scheduled=<span class="hljs-number">1</span><span class="hljs-string">" count=10</span>
 <span class="hljs-string">| fields title cron_schedule</span>
 <span class="hljs-string">| croncountruns schedule=cron_schedule</span>
 <span class="hljs-string">| convert ctime(first_trigger_time) ctime(last_trigger_time)</span>
 </code></pre>
-      <h4 id="-cronlistruns-">
-        <code>cronlistruns</code>
-      </h4>
-      <p>This command generates a multi-valued list of timestamps in epoch format, indicating when
-        the specified cron schedule will execute.</p>
-      <p><strong>Syntax</strong>:</p>
-      <pre><code class="lang-spl">cronlistruns schedule=&lt;<span class="hljs-keyword">string</span>&gt; [start=&lt;<span class="hljs-keyword">string</span>&gt;] [<span class="hljs-built_in">end</span>=&lt;<span class="hljs-keyword">string</span>&gt;] [limit=&lt;<span class="hljs-keyword">int</span>&gt;]
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <h3 id="-cronlistruns-">
+          <code>cronlistruns</code>
+        </h3>
+        <p>This command generates a multi-valued list of timestamps in epoch format, indicating when
+          the specified cron schedule will execute.</p>
+        <p><strong>Syntax</strong>:</p>
+        <pre><code class="lang-spl">cronlistruns schedule=&lt;<span class="hljs-keyword">string</span>&gt; [start=&lt;<span class="hljs-keyword">string</span>&gt;] [<span class="hljs-built_in">end</span>=&lt;<span class="hljs-keyword">string</span>&gt;] [limit=&lt;<span class="hljs-keyword">int</span>&gt;]
 </code></pre>
-      <p><strong>Things to note</strong>:</p>
-      <ul>
-        <li>If you do not specify a <code>start</code>, the command will default to the current
-          time.</li>
-        <li>If you do not specify an <code>end</code>, the command will default to 10 years from the
-          current time.</li>
-        <li>The <code>limit</code> parameter is used to limit the number of cron triggers to
-          calculate. The default is 43200.</li>
-      </ul>
-      <p><strong>Examples</strong>:</p>
-      <p>In this example, we will create a sample cron schedule:</p>
-      <pre><code class="lang-spl">| <span class="hljs-type">makeresults</span> count=<span class="hljs-number">1</span> 
+        <p><strong>Things to note</strong>:</p>
+        <ul>
+          <li>If you do not specify a <code>start</code>, the command will default to the current
+            time.</li>
+          <li>If you do not specify an <code>end</code>, the command will default to 10 years from
+            the current time.</li>
+          <li>The <code>limit</code> parameter is used to limit the number of cron triggers to
+            calculate. The default is 43200.</li>
+        </ul>
+        <p><strong>Examples</strong>:</p>
+        <p>In this example, we will create a sample cron schedule:</p>
+        <pre><code class="lang-spl">| <span class="hljs-type">makeresults</span> count=<span class="hljs-number">1</span> 
 | <span class="hljs-type">eval</span> schedule = <span class="hljs-string">"*/5 * * * *"</span> 
 | <span class="hljs-type">eval</span> start = <span class="hljs-string">"2022-01-01 00:00:00"</span> 
 | <span class="hljs-type">eval</span> <span class="hljs-keyword">end</span> = <span class="hljs-string">"2022-01-02 00:00:00"</span> 
@@ -132,80 +174,110 @@
 | <span class="hljs-type">mvexpand</span> triggers
 | <span class="hljs-type">convert</span> ctime(triggers)
 </code></pre>
-      <p>This will return the following table:</p>
-      <table>
-        <thead>
-          <tr>
-            <th>_time</th>
-            <th>schedule</th>
-            <th>start</th>
-            <th>end</th>
-            <th>triggers</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2024-07-03 18:59:26</td>
-            <td><em>/5 </em> <em> </em> *</td>
-            <td>2022-01-01 00:00:00</td>
-            <td>2022-01-02 00:00:00</td>
-            <td>01/01/2022 00:05:00</td>
-          </tr>
-          <tr>
-            <td>2024-07-03 18:59:26</td>
-            <td><em>/5 </em> <em> </em> *</td>
-            <td>2022-01-01 00:00:00</td>
-            <td>2022-01-02 00:00:00</td>
-            <td>01/01/2022 00:10:00</td>
-          </tr>
-          <tr>
-            <td>2024-07-03 18:59:26</td>
-            <td><em>/5 </em> <em> </em> *</td>
-            <td>2022-01-01 00:00:00</td>
-            <td>2022-01-02 00:00:00</td>
-            <td>01/01/2022 00:15:00</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>Here is another real-world example that pulls the cron schedule from saved searches. This
-        example will return the next 10 triggers for the saved search.</p>
-      <pre><code class="lang-spl">| <span class="hljs-built_in">rest</span> /servicesNS/-/-/saved/searches splunk_server=<span class="hljs-built_in">local</span> search=<span class="hljs-string">"disabled=0"</span> search=<span class="hljs-string">"is_scheduled=1"</span> count=<span class="hljs-number">10</span>
+        <p>This will return the following table:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>_time</th>
+              <th>schedule</th>
+              <th>start</th>
+              <th>end</th>
+              <th>triggers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2024-07-03 18:59:26</td>
+              <td><em>/5 </em> <em> </em> *</td>
+              <td>2022-01-01 00:00:00</td>
+              <td>2022-01-02 00:00:00</td>
+              <td>01/01/2022 00:05:00</td>
+            </tr>
+            <tr>
+              <td>2024-07-03 18:59:26</td>
+              <td><em>/5 </em> <em> </em> *</td>
+              <td>2022-01-01 00:00:00</td>
+              <td>2022-01-02 00:00:00</td>
+              <td>01/01/2022 00:10:00</td>
+            </tr>
+            <tr>
+              <td>2024-07-03 18:59:26</td>
+              <td><em>/5 </em> <em> </em> *</td>
+              <td>2022-01-01 00:00:00</td>
+              <td>2022-01-02 00:00:00</td>
+              <td>01/01/2022 00:15:00</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Here is another real-world example that pulls the cron schedule from saved searches. This
+          example will return the next 10 triggers for the saved search.</p>
+        <pre><code class="lang-spl">| <span class="hljs-built_in">rest</span> /servicesNS/-/-/saved/searches splunk_server=<span class="hljs-built_in">local</span> search=<span class="hljs-string">"disabled=0"</span> search=<span class="hljs-string">"is_scheduled=1"</span> count=<span class="hljs-number">10</span>
 | fields <span class="hljs-built_in">title</span> cron_schedule
 | cronlistruns schedule=cron_schedule <span class="hljs-built_in">limit</span>=<span class="hljs-number">10</span>
 </code></pre>
-      <h2 id="dashboards">Dashboards</h2>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <html>
+      <h2 id="dashboards" style="font-weight: bold;">Dashboards</h2>
       <p>The dashboards available in this app are meant to provide a starting point to build out
         your own dashboards. Feel free to clone and modify them to suit your needs.</p>
-      <h3 id="cron-schedule-builder">Cron Schedule Builder</h3>
-      <p>This dashboard allows you to input a cron schedule to visualize. The panels return various
-        details, such as the number of times the schedule will trigger within the specified
-        timeframe, the next trigger time, and the last trigger time.</p>
-      <p>
-        <img src="/static/app/ta-crontoolkit/cron-schedule-builder.png" alt="Cron Schedule Builder Image"></img>
-      </p>
-      <h3 id="scheduled-search-timeline">Scheduled Search Timeline</h3>
-      <p>This dashboard allows you to visualize when multiple saved searches are scheduled to
-        trigger. Additionally, this is a quick way to identify concurrent searches that may pose a
-        problem.</p>
-      <p>
-        <img src="/static/app/ta-crontoolkit/scheduled-search-timeline.png" alt="Scheduled Search Timeline"></img>
-      </p>
-      <h3 id="scheduled-search-analysis">Scheduled Search Analysis</h3>
-      <p>This dashboard provides a list of saved searches and their respective trigger counts. You
-        have several filtering options to help you narrow down the searches you want to analyze. It
-        provides a quick way to find searches that may be running too frequently.</p>
-      <p>
-        <img src="/static/app/ta-crontoolkit/scheduled-search-analysis.png" alt="Scheduled Search Analysis"></img>
-      </p>
-      <h3 id="scheduled-search-analysis-detailed">Scheduled Search Analysis - Detailed</h3>
-      <p>This dashboard visualizes the past and future triggers for a specific saved search. It
-        provides insight into historical triggers, historical runtime, and the expected number of
-        triggers in the future.</p>
-      <p>
-        <img src="/static/app/ta-crontoolkit/scheduled-search-analysis-detailed.png"
-          alt="Scheduled Search Analysis - Detailed"/>
-      </p>
-
     </html>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h3 id="cron-schedule-builder">Cron Schedule Builder</h3>
+        <p>This dashboard allows you to input a cron schedule to visualize. The panels return
+          various
+          details, such as the number of times the schedule will trigger within the specified
+          timeframe, the next trigger time, and the last trigger time.</p>
+        <p>
+          <img src="/static/app/ta-crontoolkit/cron-schedule-builder.png"
+            alt="Cron Schedule Builder Image"></img>
+        </p>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <h3 id="scheduled-search-timeline">Scheduled Search Timeline</h3>
+        <p>This dashboard allows you to visualize when multiple saved searches are scheduled to
+          trigger. Additionally, this is a quick way to identify concurrent searches that may pose a
+          problem.</p>
+        <p>
+          <img src="/static/app/ta-crontoolkit/scheduled-search-timeline.png"
+            alt="Scheduled Search Timeline"></img>
+        </p>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h3 id="scheduled-search-analysis">Scheduled Search Analysis</h3>
+        <p>This dashboard provides a list of saved searches and their respective trigger counts. You
+          have several filtering options to help you narrow down the searches you want to analyze.
+          It
+          provides a quick way to find searches that may be running too frequently.</p>
+        <p>
+          <img src="/static/app/ta-crontoolkit/scheduled-search-analysis.png"
+            alt="Scheduled Search Analysis"></img>
+        </p>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <h3 id="scheduled-search-analysis-detailed">Scheduled Search Analysis - Detailed</h3>
+        <p>This dashboard visualizes the past and future triggers for a specific saved search. It
+          provides insight into historical triggers, historical runtime, and the expected number of
+          triggers in the future.</p>
+        <p>
+          <img src="/static/app/ta-crontoolkit/scheduled-search-analysis-detailed.png"
+            alt="Scheduled Search Analysis - Detailed" />
+        </p>
+
+      </html>
+    </panel>
   </row>
 </form>
