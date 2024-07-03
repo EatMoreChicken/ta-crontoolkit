@@ -53,7 +53,8 @@ class CronCountRuns(StreamingCommand):
         Helper function to parse datetime from various formats.
         """
         try:
-            if re.match("^\d{10}$", value):
+            if re.match("^\d{10}(\.\d+)?$", value):
+                value = re.sub(r'\.\d+', '', value)
                 return datetime.datetime.fromtimestamp(int(value))
             else:
                 return datetime.datetime.strptime(value, self.DEFAULT_DATE_FORMAT)
