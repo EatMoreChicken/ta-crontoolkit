@@ -1,4 +1,4 @@
-# ta-crontoolkit
+# Cron Toolkit
 
 Welcome to the Cron Toolkit app.
 
@@ -145,27 +145,28 @@ The dashboards available in this app are meant to provide a starting point to bu
 
 This dashboard allows you to input a cron schedule to visualize. The panels return various details, such as the number of times the schedule will trigger within the specified timeframe, the next trigger time, and the last trigger time.
 
-![Cron Schedule Builder Image](/appserver/static/cron-schedule-builder.png)
+![Cron Schedule Builder Image](/appserver/static/images/cron-schedule-builder.png)
 
 ### Scheduled Search Timeline
 
 This dashboard allows you to visualize when multiple saved searches are scheduled to trigger. Additionally, this is a quick way to identify concurrent searches that may pose a problem.
 
-![Scheduled Search Timeline](/appserver/static/scheduled-search-timeline.png)
+![Scheduled Search Timeline](/appserver/static/images/scheduled-search-timeline.png)
 
 ### Scheduled Search Analysis
 
 This dashboard provides a list of saved searches and their respective trigger counts. You have several filtering options to help you narrow down the searches you want to analyze. It provides a quick way to find searches that may be running too frequently.
 
-![Scheduled Search Analysis](/appserver/static/scheduled-search-analysis.png)
+![Scheduled Search Analysis](/appserver/static/images/scheduled-search-analysis.png)
 
 ### Scheduled Search Analysis - Detailed
 
 This dashboard visualizes the past and future triggers for a specific saved search. It provides insight into historical triggers, historical runtime, and the expected number of triggers in the future.
 
-![Scheduled Search Analysis - Detailed](/appserver/static/scheduled-search-analysis-detailed.png)
+![Scheduled Search Analysis - Detailed](/appserver/static/images/scheduled-search-analysis-detailed.png)
 
 --- 
+
 ## To-Do
 ### Custom Commands
  - [ ] `cronnextrun`: This command simply returns the next scheduled trigger time for a specific cron schedule.
