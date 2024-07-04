@@ -1,6 +1,6 @@
 <form version="1.1">
-  <label>Cron Toolkit - Scheduled Search Analysis - Individual</label>
-  <description>Analyze cron schedules for specific saved searches.</description>
+  <label>Scheduled Search Analysis - Detailed</label>
+  <description>Analyze detailed cron schedule infomration for specific saved searches.</description>
   <fieldset submitButton="false">
     <input type="dropdown" token="app_name" searchWhenChanged="true">
       <label>App</label>

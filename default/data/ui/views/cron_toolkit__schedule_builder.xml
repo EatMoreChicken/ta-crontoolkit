@@ -1,5 +1,5 @@
 <form version="1.1">
-  <label>Cron Toolkit - Schedule Builder</label>
+  <label>Cron Schedule Builder</label>
   <description>Build and visualize new cron schedules.</description>
   <fieldset submitButton="true" autoRun="true">
     <input type="text" token="schedule" searchWhenChanged="false">

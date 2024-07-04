@@ -15,7 +15,11 @@ class CronListRuns(StreamingCommand):
 
     Example:
 
-    ``| makeresults count=1 | eval schedule = "*/5 * * * *" | eval start = "2022-01-01 00:00:00" | eval end = "2022-01-02 00:00:00" | cronlistruns schedule=schedule end=end start=start``
+    | makeresults count=1 
+    | eval schedule = "*/5 * * * *" 
+    | eval start = "2022-01-01 00:00:00" 
+    | eval end = "2022-01-02 00:00:00" 
+    | cronlistruns schedule=schedule end=end start=start
 
     returns a record with one new field 'triggers' which is a list of times that the cron schedule will trigger between the start time and end time.
     """
@@ -42,50 +46,27 @@ class CronListRuns(StreamingCommand):
         default=43200
     )
 
+    DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+    def parse_datetime(self, value):
+        """
+        Helper function to parse datetime from various formats.
+        """
+        try:
+            if re.match("^\d{10}(\.\d+)?$", value):
+                value = re.sub(r'\.\d+', '', value)
+                return datetime.datetime.fromtimestamp(int(value))
+            else:
+                return datetime.datetime.strptime(value, self.DEFAULT_DATE_FORMAT)
+        except ValueError as e:
+            raise ValueError(f"Invalid datetime format: {value}. Expected format: {self.DEFAULT_DATE_FORMAT} or epoch timestamp.")
+
     def stream(self, records):
-        date_format = "%Y-%m-%d %H:%M:%S"
-        self.logger.debug('CronListRuns: %s', self)
         for record in records:
             schedule = str(record[self.schedule])
-            if self.start in record:
-                start = str(record[self.start])
-                if start == "":
-                    start = datetime.datetime.now()
-                    start = start.strftime(date_format)
-                elif re.match("^\d{10}", start):
-                    start = re.match("^\d{10}", start).group()
-                if not isinstance(start, datetime.datetime):
-                    try:
-                        start = datetime.datetime.strptime(start, date_format)
-                    except ValueError:
-                        try:
-                            start = datetime.datetime.fromtimestamp(int(start))
-                        except ValueError:
-                            raise ValueError(f"Invalid start time format. Expected format: {date_format} or epoch timestamp: {start}")
-                else:
-                    raise ValueError(f"Invalid start time format. Expected format: {date_format} or epoch timestamp: {start}")
-            else:
-                start = datetime.datetime.now()
-            if self.end in record:
-                end = str(record[self.end])
-                if end == "":
-                    end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
-                    end = end.strftime(date_format)
-                elif re.match("^\d{10}", end):
-                    end = re.match("^\d{10}", end).group()
-                if not isinstance(end, datetime.datetime):
-                    try:
-                        end = datetime.datetime.strptime(end, date_format)
-                    except ValueError:
-                        try:
-                                end = datetime.datetime.fromtimestamp(int(end))
-                        except ValueError:
-                            raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: '{end}'")
-                else:
-                    raise ValueError(f"Invalid end time format. Expected format: {date_format} or epoch timestamp: '{end}'")
-            else:
-                end = datetime.datetime.now() + datetime.timedelta(days=365 * 10)
-
+            start = self.parse_datetime(record.get(self.start, datetime.datetime.now().strftime(self.DEFAULT_DATE_FORMAT)))
+            end = self.parse_datetime(record.get(self.end, (datetime.datetime.now() + datetime.timedelta(days=3650)).strftime(self.DEFAULT_DATE_FORMAT)))
+            
             iter = croniter(schedule, start)
             triggers = []
 
