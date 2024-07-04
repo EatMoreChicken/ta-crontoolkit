@@ -1,6 +1,6 @@
 # Cron Toolkit
 
-Welcome to the Cron Toolkit app.
+👋🏽 Welcome to the Cron Toolkit app.
 
 The purpose of this app to provide a toolkit for visualizing and analyzing cron schedules within Splunk. The app introduces custom commands and easy to use dashboards to make working with cron schedules easier.
 
@@ -18,9 +18,9 @@ Additionally, if you plan to use the dashboards, your account's role will need t
 
 ## Installation
 
-1. Download the app from the latest GitHub release.
-2. Install the app on your Splunk instance.
-3. Restart Splunk.
+1. 📥 Download from the latest GitHub release.
+2. 🛠️ Install on your Splunk instance.
+3. 🔄 Restart Splunk.
 
 ## Setup
 
